@@ -69,6 +69,14 @@ const genPageParam = (index, size) => {
   return queryParam;
 };
 
+const genPageStringParam = page => {
+  let queryParam = "";
+  if(page !== undefined && page.length > 0) {
+    queryParam = `page=${page}`;
+  }
+  return queryParam;
+};
+
 const handleResponse = async response => {
   if (response.ok){
     let result = {};
@@ -123,8 +131,13 @@ const IndyRest = {
       const response = await http.delete(storeAPIEndpoint(pkgType, type, name));
       return handleResponse(response);
     },
-    getStores: async (pkgType, type) => {
-      const response = await jsonRest.get(`${BASE_STORE_API_PATH}/${pkgType}/${type}`);
+    getStores: async (pkgType, type, page) => {
+      const queryParam = genPageStringParam(page);
+      let apiPath = `${BASE_STORE_API_PATH}/${pkgType}/${type}`;
+      if(queryParam.length > 0){
+        apiPath += `?${queryParam}`;
+      }
+      const response = await jsonRest.get(apiPath);
       return handleResponse(response);
     }
   },
