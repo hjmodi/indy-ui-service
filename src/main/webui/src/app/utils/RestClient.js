@@ -142,8 +142,13 @@ const IndyRest = {
     }
   },
   storeQueryRes: {
-    getEndpoints: async pkgType => {
-      const response = await jsonRest.get(`${BASE_STORE_API_PATH}/query/endpoints/${pkgType}`);
+    getEndpoints: async (pkgType, page) => {
+      const queryParam = genPageStringParam(page);
+      let apiPath = `${BASE_STORE_API_PATH}/query/endpoints/${pkgType}`;
+      if(queryParam.length > 0){
+        apiPath += `?${queryParam}`;
+      }
+      const response = await jsonRest.get(apiPath);
       return handleResponse(response);
     },
     getStoreKeys: async pkgType => {
